@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.stqa</groupId>
+  <artifactId>UnitTestingLab</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>UnitTestingLab</name>
+
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.jupiter.version>5.10.2</junit.jupiter.version>
+    <testng.version>7.9.0</testng.version>
+    <surefire.version>3.2.5</surefire.version>
+  </properties>
+
+  <dependencies>
+    <!-- JUnit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- TestNG -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.version}</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+    JUnit 5 and TestNG both sit on the classpath, so Surefire needs to be told
+    which framework to run:
+      mvn test              -> JUnit 5 tests (CalculatorTest)    [default profile]
+      mvn test -Ptestng     -> TestNG tests (CalculatorTestNGTest)
+  -->
+  <profiles>
+    <profile>
+      <id>junit5</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${surefire.version}</version>
+            <configuration>
+              <includes>
+                <include>**/CalculatorTest.java</include>
+              </includes>
+              <classpathDependencyExcludes>
+                <classpathDependencyExclude>org.testng:testng</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.maven.surefire</groupId>
+                <artifactId>surefire-junit-platform</artifactId>
+                <version>${surefire.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>testng</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${surefire.version}</version>
+            <configuration>
+              <includes>
+                <include>**/CalculatorTestNGTest.java</include>
+              </includes>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.maven.surefire</groupId>
+                <artifactId>surefire-testng</artifactId>
+                <version>${surefire.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
